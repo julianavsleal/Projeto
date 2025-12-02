@@ -5,8 +5,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.forum</groupId>
-    <artifactId>forum-desktop</artifactId>
+    <groupId>com.phoenixtech</groupId>
+    <artifactId>phoenixtech-desktop</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>

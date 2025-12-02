@@ -1,6 +1,6 @@
-package com.forum.view;
+package com.phoenixtech.view;
 
-import com.forum.dao.ConexaoBD;
+import com.phoenixtech.dao.ConexaoBD;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
@@ -9,7 +9,8 @@ public class ListarPostagens extends JFrame {
 
     public ListarPostagens() {
         setTitle("Postagens");
-        setSize(700, 400);
+        setSize(1200, 700);
+        setExtendedState(MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
 
         String[] col = {"Autor", "Titulo", "Categoria"};

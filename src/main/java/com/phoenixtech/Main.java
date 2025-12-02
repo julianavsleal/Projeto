@@ -1,12 +1,12 @@
-package com.forum;
+package com.phoenixtech;
 
 import javax.swing.SwingUtilities;
-import com.forum.view.LoginView;
+import com.phoenixtech.view.LoginView;
 
 public class Main {
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            new com.forum.view.LoginView();
+            new com.phoenixtech.view.LoginView();
         });
     }
 }

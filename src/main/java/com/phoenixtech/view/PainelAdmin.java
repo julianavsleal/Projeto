@@ -1,6 +1,6 @@
-package com.forum.view;
+package com.phoenixtech.view;
 
-import com.forum.dao.ConexaoBD;
+import com.phoenixtech.dao.ConexaoBD;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
@@ -13,8 +13,9 @@ public class PainelAdmin extends JFrame {
 
     public PainelAdmin(String usuario) {
         this.usuarioLogado = usuario;
-        setTitle("Admin - Gestao de Usuarios");
-        setSize(700, 400);
+        setTitle("Admin - Gestão de Usuarios");
+        setSize(1200, 800);
+        setExtendedState(MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
 
         model = new DefaultTableModel(new String[]{"ID","Usuario","Nome","Ativo"}, 0);
@@ -31,7 +32,6 @@ public class PainelAdmin extends JFrame {
         JButton btnNovo = new JButton("Novo Usuario");
         btnNovo.addActionListener(e -> new CadastroUsuario(this));
 
-        // Botões para gerenciar postagens (mesma funcionalidade do PainelUsuario)
         JButton btnPostar = new JButton("Nova Postagem");
         btnPostar.addActionListener(e -> new CadastroPostagem(usuarioLogado));
 

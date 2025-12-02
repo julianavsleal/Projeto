@@ -19,12 +19,8 @@ bin/
 .DS_Store
 Thumbs.db
 
-# Arquivos de dependência locais
-lib/
-
-README.md
-
-sources.txt
+# Arquivos de build
+pom.xml
 
 # Ignorar arquivos de teste 
 TestConnection.java
