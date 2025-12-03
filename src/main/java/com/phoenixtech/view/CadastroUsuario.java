@@ -203,9 +203,9 @@ public class CadastroUsuario extends JFrame {
             }
             dispose();
         } catch (SQLIntegrityConstraintViolationException ex) {
-            JOptionPane.showMessageDialog(this, "Nome de usuário já existe.");
+            JOptionPane.showMessageDialog(this, "Nome de usuario já existe.");
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Idade deve ser um número válido.");
+            JOptionPane.showMessageDialog(this, "Idade deve ser um número valido.");
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro ao cadastrar: " + ex.getMessage());

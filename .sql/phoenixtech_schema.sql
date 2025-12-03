@@ -24,10 +24,12 @@ CREATE TABLE usuarios (
 
 CREATE TABLE postagens (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    autor VARCHAR(100),
+    autor_id INT,
     titulo VARCHAR(200),
     texto TEXT,
-    categoria VARCHAR(100)
+    categoria VARCHAR(100),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (autor_id) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 INSERT IGNORE INTO interesses (nome) VALUES

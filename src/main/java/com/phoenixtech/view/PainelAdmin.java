@@ -13,7 +13,7 @@ public class PainelAdmin extends JFrame {
 
     public PainelAdmin(String usuario) {
         this.usuarioLogado = usuario;
-        setTitle("Admin - Gestão de Usuarios");
+        setTitle("Admin - Gestao de Usuarios");
         setSize(1200, 800);
         setExtendedState(MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
@@ -33,10 +33,10 @@ public class PainelAdmin extends JFrame {
         btnNovo.addActionListener(e -> new CadastroUsuario(this));
 
         JButton btnPostar = new JButton("Nova Postagem");
-        btnPostar.addActionListener(e -> new CadastroPostagem(usuarioLogado));
+        btnPostar.addActionListener(e -> new CadastroPostagem(usuarioLogado, obterUsuarioId(usuarioLogado)));
 
         JButton btnListar = new JButton("Ver Postagens");
-        btnListar.addActionListener(e -> new ListarPostagens());
+        btnListar.addActionListener(e -> new ListarPostagens(usuarioLogado, obterUsuarioId(usuarioLogado)));
 
         JPanel p = new JPanel();
         p.add(btnInativar);
@@ -103,5 +103,20 @@ public class PainelAdmin extends JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage());
         }
+    }
+
+    private Integer obterUsuarioId(String nomeUsuario) {
+        try (Connection con = ConexaoBD.obterConexao()) {
+            PreparedStatement ps = con.prepareStatement("SELECT id FROM usuarios WHERE usuario = ?");
+            ps.setString(1, nomeUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

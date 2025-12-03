@@ -1,6 +1,8 @@
 package com.phoenixtech.view;
 
 import com.phoenixtech.dao.ConexaoBD;
+import com.phoenixtech.dao.PostagemDAO;
+import com.phoenixtech.model.Postagem;
 import javax.swing.*;
 import java.sql.*;
 
@@ -8,9 +10,19 @@ public class CadastroPostagem extends JFrame {
     JTextField txtAutor, txtTitulo;
     JTextArea txtTexto;
     JComboBox<String> cboCategoria;
+    private Postagem postagemEditando;
+    private ListarPostagens parentView;
+    private Integer usuarioId;
 
-    public CadastroPostagem(String autor) {
-        setTitle("Nova Postagem");
+    public CadastroPostagem(String autor, Integer usuarioId) {
+        this(autor, null, null, usuarioId);
+    }
+
+    public CadastroPostagem(String autor, Postagem postagem, ListarPostagens parentView, Integer usuarioId) {
+        this.postagemEditando = postagem;
+        this.parentView = parentView;
+        this.usuarioId = usuarioId;
+        setTitle(postagem != null ? "Editar Postagem" : "Nova Postagem");
         setSize(1000, 700);
         setExtendedState(MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
@@ -20,7 +32,7 @@ public class CadastroPostagem extends JFrame {
         panelFormulario.setLayout(new javax.swing.BoxLayout(panelFormulario, javax.swing.BoxLayout.Y_AXIS));
         panelFormulario.setBorder(javax.swing.BorderFactory.createEmptyBorder(30, 250, 30, 250));
 
-        JLabel titulo = new JLabel("Nova Postagem");
+        JLabel titulo = new JLabel(postagem != null ? "Editar Postagem" : "Nova Postagem");
         titulo.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 28));
         titulo.setAlignmentX(javax.swing.JComponent.CENTER_ALIGNMENT);
         panelFormulario.add(titulo);
@@ -47,6 +59,7 @@ public class CadastroPostagem extends JFrame {
         txtTitulo = new JTextField();
         txtTitulo.setPreferredSize(new java.awt.Dimension(350, 35));
         txtTitulo.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
+        if (postagem != null) txtTitulo.setText(postagem.getTitulo());
         JPanel panelTitulo = new JPanel();
         panelTitulo.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 0));
         panelTitulo.add(l2);
@@ -64,6 +77,7 @@ public class CadastroPostagem extends JFrame {
         txtTexto.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
         txtTexto.setLineWrap(true);
         txtTexto.setWrapStyleWord(true);
+        if (postagem != null) txtTexto.setText(postagem.getTexto());
         JScrollPane sp = new JScrollPane(txtTexto);
         sp.setMaximumSize(new java.awt.Dimension(500, 150));
         panelFormulario.add(sp);
@@ -76,6 +90,7 @@ public class CadastroPostagem extends JFrame {
         cboCategoria.setPreferredSize(new java.awt.Dimension(350, 35));
         cboCategoria.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
         carregarInteresses();
+        if (postagem != null) cboCategoria.setSelectedItem(postagem.getCategoria());
         JPanel panelCategoria = new JPanel();
         panelCategoria.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 0));
         panelCategoria.add(l4);
@@ -84,7 +99,7 @@ public class CadastroPostagem extends JFrame {
         panelFormulario.add(panelCategoria);
         panelFormulario.add(javax.swing.Box.createVerticalStrut(30));
 
-        JButton btnSalvar = new JButton("Salvar");
+        JButton btnSalvar = new JButton(postagem != null ? "Atualizar" : "Salvar");
         btnSalvar.setPreferredSize(new java.awt.Dimension(150, 40));
         btnSalvar.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
         btnSalvar.setAlignmentX(javax.swing.JComponent.CENTER_ALIGNMENT);
@@ -94,6 +109,7 @@ public class CadastroPostagem extends JFrame {
         JScrollPane scrollPane = new JScrollPane(panelFormulario);
         add(scrollPane, java.awt.BorderLayout.CENTER);
 
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setVisible(true);
     }
 
@@ -109,15 +125,30 @@ public class CadastroPostagem extends JFrame {
     }
 
     void salvar() {
-        try (Connection con = ConexaoBD.obterConexao()) {
-            String sql = "INSERT INTO postagens (autor, titulo, texto, categoria) VALUES (?,?,?,?)";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, txtAutor.getText().trim());
-            ps.setString(2, txtTitulo.getText().trim());
-            ps.setString(3, txtTexto.getText().trim());
-            ps.setString(4, cboCategoria.getSelectedItem().toString());
-            ps.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Postagem criada!");
+        try {
+            PostagemDAO dao = new PostagemDAO();
+            if (postagemEditando != null) {
+                postagemEditando.setTitulo(txtTitulo.getText().trim());
+                postagemEditando.setTexto(txtTexto.getText().trim());
+                postagemEditando.setCategoria(cboCategoria.getSelectedItem().toString());
+                dao.atualizar(postagemEditando);
+                JOptionPane.showMessageDialog(this, "Postagem atualizada!");
+            } else {
+                if (usuarioId == null || usuarioId <= 0) {
+                    JOptionPane.showMessageDialog(this, "Erro: Usuário não identificado.");
+                    return;
+                }
+                Postagem novaPostagem = new Postagem();
+                novaPostagem.setAutorId(usuarioId);
+                novaPostagem.setTitulo(txtTitulo.getText().trim());
+                novaPostagem.setTexto(txtTexto.getText().trim());
+                novaPostagem.setCategoria(cboCategoria.getSelectedItem().toString());
+                dao.inserir(novaPostagem);
+                JOptionPane.showMessageDialog(this, "Postagem criada!");
+            }
+            if (parentView != null) {
+                parentView.carregarPostagens();
+            }
             dispose();
         } catch (Exception e) {
             e.printStackTrace();

@@ -94,7 +94,7 @@ public class LoginView extends JFrame {
                 }
                 dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Usuário ou senha inválidos (ou inativo).");
+                JOptionPane.showMessageDialog(this, "Usuario ou senha invalidos (ou inativo).");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
